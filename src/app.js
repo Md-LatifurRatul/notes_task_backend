@@ -1,0 +1,26 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import { env } from './config/env.js';
+import authRoutes from './routes/auth.routes.js';
+import noteRoutes from './routes/notes.routes.js';
+import userRoutes from './routes/users.routes.js';
+import postRoutes from './routes/posts.routes.js';
+import { errorHandler, notFound } from './middleware/error.middleware.js';
+import docsRoutes from './docs/docs.routes.js';
+
+export const app = express();
+app.disable('x-powered-by');
+app.use(helmet());
+app.use(cors({ origin: env.CORS_ORIGIN, methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Authorization'] }));
+app.use(express.json({ limit: '256kb', strict: true }));
+app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: 'draft-7', legacyHeaders: false }));
+app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
+app.use('/docs', docsRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/notes', noteRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
+app.use(notFound);
+app.use(errorHandler);

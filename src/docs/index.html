@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Notes API — Docs</title>
+  <link rel="stylesheet" href="__SWAGGER_CSS_URL__">
+  <style>
+    :root {
+      --bg: #0b1021;
+      --panel: #12182c;
+      --border: #232b44;
+      --text: #e6eafd;
+      --muted: #9aa6c9;
+      --accent: #6ea8fe;
+      --surface: #1a2238;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--text);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5; -webkit-font-smoothing: antialiased;
+    }
+
+    .toolbar {
+      position: sticky; top: 0; z-index: 200;
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 22px;
+      background: rgba(11, 16, 33, 0.82);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toolbar .brand { display: flex; flex-direction: column; gap: 1px; }
+    .toolbar .brand .name { font-weight: 600; font-size: 14px; letter-spacing: 0.2px; }
+    .toolbar .brand .sub {
+      font-size: 11px; color: var(--muted);
+      letter-spacing: 0.4px; text-transform: uppercase;
+    }
+
+    .theme-toggle {
+      margin-left: auto;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface); color: var(--text);
+      font-size: 12px; cursor: pointer;
+      transition: border-color .15s ease, background .15s ease, transform .1s ease;
+    }
+    .theme-toggle:hover { border-color: var(--accent); }
+    .theme-toggle:active { transform: scale(0.97); }
+    .theme-toggle .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(110,168,254,0.25);
+    }
+    .theme-toggle .dot.light {
+      background: #f5c759;
+      box-shadow: 0 0 0 3px rgba(245,199,89,0.25);
+    }
+
+    /* swagger-ui hidden until authentication succeeds */
+    body:not(.ready) .swagger-ui { display: none; }
+
+    /* login overlay visible until authentication succeeds */
+    body:not(.ready) .login-overlay { display: flex; }
+    body.ready .login-overlay { display: none; }
+
+    .swagger-ui { margin: 0; }
+
+    /* --- light theme --- */
+    html.light,
+    html.light .swagger-ui,
+    html.light .swagger-ui .opblock,
+    html.light .swagger-ui .opblock-tag,
+    html.light .swagger-ui .opblock-summary-method,
+    html.light .swagger-ui .opblock-summary-path,
+    html.light .swagger-ui .loading-container,
+    html.light .swagger-ui .modal-content,
+    html.light .swagger-ui .dialog-ux,
+    html.light .swagger-ui .model-box {
+      background: #ffffff; color: #1a1b1f;
+    }
+    html.light, html.light body { background: #f4f6fb; color: #1a1b1f; }
+    html.light .swagger-ui .opblock { border-color: #e2e6ee; }
+    html.light .swagger-ui .opblock-tag { border-color: #e2e6ee; background: #fafbfd; }
+    html.light .swagger-ui .opblock-summary-method {
+      background: #1d3a66; color: #fff;
+    }
+    html.light .swagger-ui .opblock-summary-method.get { background: #1d7e36; }
+    html.light .swagger-ui .opblock-summary-method.post { background: #0d65a6; }
+    html.light .swagger-ui .opblock-summary-method.put { background: #a8511a; }
+    html.light .swagger-ui .opblock-summary-method.delete { background: #a51d1d; }
+    html.light .swagger-ui .opblock-summary-method.options { background: #6b6f76; }
+    html.light .swagger-ui .opblock-summary-method.head { background: #6b6f76; }
+    html.light .swagger-ui .opblock-summary-method.patch { background: #7b4a0c; }
+    html.light .swagger-ui .opblock-tag:hover { background: #eff3ff; }
+    html.light .swagger-ui .opblock-tag.active { background: #1d3a66; color: #fff; }
+    html.light .swagger-ui .opblock-content { background: #ffffff; }
+    html.light .swagger-ui .opblock-body pre span.swagger-ui-wrap {
+      background: #f4f6fb; color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap code {
+      background: #eef0f6; color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap code.swagger-ui-wrap {
+      color: #b83d00;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .opblock-description-wrapper { color: #4b5563; }
+    html.light .swagger-ui .swagger-ui-wrap .opblock-description p { color: #6b7280; }
+    html.light .swagger-ui .swagger-ui-wrap .opblock-external-docs-wrapper { color: #4b5563; }
+    html.light .swagger-ui .swagger-ui-wrap .markdown nobble .markdown-body { color: #374151; }
+    html.light .swagger-ui .swagger-ui-wrap .opblock-summary-path li { color: #1a1b1f; }
+    html.light .swagger-ui .opblock-tag .opblock-tag-text { color: #1a1b1f; }
+    html.light .swagger-ui .swagger-ui-wrap .opblock-tag:hover .opblock-tag-text { color: #ffffff; }
+    html.light .swagger-ui .message-line .message-body {
+      background: #fef3c7; color: #92400e;
+    }
+    html.light .swagger-ui .opblock .message-line .message-body {
+      background: #fee2e2; color: #991b1b;
+    }
+    html.light .swagger-ui .opblock .message-line .message-body.info {
+      background: #dbeafe; color: #1e40af;
+    }
+    html.light .swagger-ui .swagger-ui-wrap input[type=text],
+    html.light .swagger-ui .swagger-ui-wrap input[type=url],
+    html.light .swagger-ui .swagger-ui-wrap input[type=password],
+    html.light .swagger-ui .swagger-ui-wrap textarea,
+    html.light .swagger-ui .swagger-ui-wrap select {
+      background: #fff; border-color: #d1d5db; color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap input[type=text]:focus,
+    html.light .swagger-ui .swagger-ui-wrap input[type=url]:focus,
+    html.light .swagger-ui .swagger-ui-wrap input[type=password]:focus,
+    html.light .swagger-ui .swagger-ui-wrap textarea:focus,
+    html.light .swagger-ui .swagger-ui-wrap select:focus {
+      border-color: #1d3a66;
+      box-shadow: 0 0 0 2px rgba(29,58,102,0.15);
+    }
+    html.light .swagger-ui .swagger-ui-wrap .btn-primary {
+      background: #1d3a66; border-color: #1d3a66;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .btn-primary:hover { background: #142c52; }
+    html.light .swagger-ui .swagger-ui-wrap .btn-danger {
+      background: #a51d1d; border-color: #a51d1d; color: #fff;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .btn-outline-secondary {
+      background: #fff; border-color: #d1d5db; color: #374151;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .btn-outline-secondary:hover { background: #f3f4f6; }
+    html.light .swagger-ui .topbar { background: #ffffff; border-color: #e2e6ee; }
+    html.light .swagger-ui .topbar .download-url-wrapper input[type=text] {
+      background: #fafbfd; border-color: #d1d5db; color: #1a1b1f;
+    }
+    html.light .swagger-ui .topbar .download-url-wrapper input[type=text]:focus { border-color: #1d3a66; }
+    html.light .swagger-ui .topbar .download-url-wrapper .select-label { color: #6b7280; }
+    html.light .swagger-ui .swagger-ui-wrap .info li { color: #6b7280; }
+    html.light .swagger-ui .swagger-ui-wrap .info ul { border-color: #e2e6ee; }
+    html.light .swagger-ui .swagger-ui-wrap .info .info-description { color: #6b7280; }
+    html.light .swagger-ui .swagger-ui-wrap .scheme-container {
+      border-color: #e2e6ee; background: #fafbfd;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .scheme-container select { color: #1a1b1f; }
+    html.light .swagger-ui .swagger-ui-wrap .scheme-container .try-out-button {
+      background: #0d65a6; color: #fff;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .scheme-container .try-out-button.try-out-button-enabled {
+      background: #1d7e36;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-col_status { background: #f4f6fb; }
+    html.light .swagger-ui .swagger-ui-wrap .response-col_status .response-control-media-type--accepted-type,
+    html.light .swagger-ui .swagger-ui-wrap .response-col_status .response-control-expanding-group--accepted-type {
+      color: #6b7280;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-media-type--accepted-type--expandable,
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group--accepted-type--expandable {
+      background: #eef0f6; color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-media-type--accepted-type--expandable:hover {
+      background: #e2e6ee;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group--accepted-type--expandable:hover {
+      background: #e2e6ee;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-media-type__title,
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group__title {
+      color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-media-type__title-label,
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group__title-label {
+      color: #6b7280;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-media-type .select-on-focus {
+      color: #6b7280;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group .response-control-expanding-group--content {
+      background: #f4f6fb; border-color: #e2e6ee;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group .response-control-expanding-group--content select {
+      background: #fff; border-color: #d1d5db; color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group__title:hover {
+      background: #eef0f6;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group--content {
+      border-color: #e2e6ee;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group--header {
+      background: #fafbfd; border-color: #e2e6ee;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group--header select {
+      background: #fff; border-color: #d1d5db; color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-control-expanding-group__delete:hover {
+      color: #a51d1d;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-render-selected { color: #6b7280; }
+    html.light .swagger-ui .swagger-ui-wrap .response-render-selected select {
+      background: #fff; border-color: #d1d5db; color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-body { background: #fafbfd; }
+    html.light .swagger-ui .swagger-ui-wrap .response-body pre {
+      background: #f4f6fb; color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-body .model-box {
+      background: #ffffff; border-color: #e2e6ee;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .response-body .model-box .model-signature {
+      color: #6b7280;
+    }
+    html.light .swagger-ui .model-box .collapsable-end,
+    html.light .swagger-ui .model-box .collapsable-start {
+      border-color: #e2e6ee; background: #ffffff;
+    }
+    html.light .swagger-ui .model-box .collapsable-start.collapsable-start-open {
+      border-color: #e2e6ee; background: #f4f6fb;
+    }
+    html.light .swagger-ui .model-box .collapsable-end.collapsable-end-open {
+      border-color: #e2e6ee; background: #f4f6fb;
+    }
+    html.light .swagger-ui .model-box .model-box .model-box pre span.swagger-ui-wrap {
+      background: #f4f6fb;
+    }
+    html.light .swagger-ui .model-box .show-model-box .model-box-body {
+      border-color: #e2e6ee;
+    }
+    html.light .swagger-ui .model-box pre span.swagger-ui-wrap code.swagger-ui-wrap.code-box,
+    html.light .swagger-ui .model-box pre span.swagger-ui-wrap code.swagger-ui-wrap.key-box {
+      color: #1a1b1f;
+    }
+    html.light .swagger-ui .model-box pre span.swagger-ui-wrap code.swagger-ui-wrap.string-box {
+      color: #b83d00;
+    }
+    html.light .swagger-ui .model-box pre span.swagger-ui-wrap code.swagger-ui-wrap.number-box {
+      color: #a8511a;
+    }
+    html.light .swagger-ui .model-box pre span.swagger-ui-wrap code.swagger-ui-wrap.boolean-box {
+      color: #a8511a;
+    }
+    html.light .swagger-ui .model-box pre span.swagger-ui-wrap code.swagger-ui-wrap.null-box {
+      color: #6b6f76;
+    }
+    html.light .swagger-ui .model-box pre span.swagger-ui-wrap code.swagger-ui-wrap.object-box {
+      color: #1d3a66;
+    }
+    html.light .swagger-ui .model-box pre span.swagger-ui-wrap code.swagger-ui-wrap.array-box {
+      color: #7b4a0c;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .http-checkbox input { accent-color: #1d3a66; }
+    html.light .swagger-ui .swagger-ui-wrap .checkbox input { accent-color: #1d3a66; }
+    html.light .swagger-ui .swagger-ui-wrap .checkbox__input:checked + .checkbox__.box {
+      background: #1d3a66;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .checkbox__box__check,
+    html.light .swagger-ui .swagger-ui-wrap .checkbox__input:disabled + .checkbox__box__check {
+      color: #fff;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name { color: #1a1b1f; }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__type { color: #6b7280; }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__value select {
+      background: #fff; border-color: #d1d5db; color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__value textarea,
+    html.light .swagger-ui .swagger-ui-wrap .parameter__value input {
+      background: #fff; border-color: #d1d5db; color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__value textarea:focus,
+    html.light .swagger-ui .swagger-ui-wrap .parameter__value input:focus {
+      border-color: #1d3a66;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name-label { color: #6b7280; }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name-label .label--required::after {
+      color: #a51d1d;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name-label .label--optional::after {
+      color: #6b7280;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name .text--primary-color {
+      color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name .text--muted-color {
+      color: #6b7280;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name .text--muted-color:hover {
+      color: #1a1b1f;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name .text--warning-color {
+      color: #b45309;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name .text--danger-color {
+      color: #a51d1d;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name .text--success-color {
+      color: #1d7e36;
+    }
+    html.light .swagger-ui .swagger-ui-wrap .parameter__name .text--info-color {
+      color: #1d3a66;
+    }
+
+    /* --- login overlay --- */
+    .login-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      align-items: center; justify-content: center;
+      background: radial-gradient(1200px 800px at 50% -10%, rgba(110,168,254,0.08), transparent 60%),
+        linear-gradient(180deg, var(--bg), #070b18);
+      padding: 24px;
+    }
+    .login-card {
+      width: 100%; max-width: 420px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .login-card h1 {
+      margin: 0 0 6px;
+      font-size: 20px; font-weight: 600; letter-spacing: 0.2px;
+    }
+    .login-card p {
+      margin: 0 0 22px;
+      color: var(--muted); font-size: 13px; line-height: 1.5;
+    }
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.6px; color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .field input {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text); font-size: 14px;
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(110,168,254,0.18);
+    }
+    .btn {
+      width: 100%;
+      padding: 11px 12px;
+      border: none; border-radius: 8px;
+      background: var(--accent); color: #06101f;
+      font-weight: 600; font-size: 13px;
+      cursor: pointer;
+      transition: transform .08s ease, background .15s ease;
+    }
+    .btn:hover { background: #7fb4ff; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .error {
+      margin-top: 12px;
+      color: #ff8a8a; font-size: 12px;
+      min-height: 0;
+      transition: opacity .15s ease;
+    }
+    .error.show { opacity: 1; }
+    .hint {
+      margin-top: 16px;
+      font-size: 11px; color: var(--muted); line-height: 1.5;
+    }
+    .hint code {
+      background: var(--surface);
+      padding: 1px 5px; border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar" role="banner">
+    <div class="brand">
+      <span class="name">Secure Notes API</span>
+      <span class="sub">Swagger UI</span>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" type="button"
+      aria-label="Toggle light or dark mode">
+      <span class="dot" id="theme-dot" aria-hidden="true"></span>
+      <span id="theme-label">Theme</span>
+    </button>
+  </div>
+
+  <div id="swagger-ui"></div>
+
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-card" role="dialog" aria-modal="true" aria-labelledby="login-title">
+      <h1 id="login-title">API docs are protected</h1>
+      <p>Sign in with the API docs credentials to view the full endpoint reference and try requests from the browser.</p>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-username">Username</label>
+          <input id="login-username" name="username" type="text"
+            autocomplete="username" placeholder="e.g. admin" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password"
+            autocomplete="current-password" placeholder="e.g. AdminRatul" required>
+        </div>
+        <button class="btn" id="login-btn" type="submit">Sign in</button>
+        <div class="error" id="login-error" role="alert"></div>
+      </form>
+      <div class="hint">
+        These are the docs-only credentials set in <code>API_DOCS_USERNAME</code> /
+        <code>API_DOCS_PASSWORD</code>. They are separate from your application JWT.
+      </div>
+    </div>
+  </div>
+
+  <script src="__SWAGGER_BUNDLE_URL__"></script>
+  <script src="__SWAGGER_PRESET_URL__"></script>
+  <script nonce="__NONCE__">
+    (function () {
+      'use strict';
+
+      var STORAGE_KEY = 'notes-api-docs-theme';
+
+      function applyTheme(t) {
+        document.documentElement.classList.toggle('light', t === 'light');
+        var dot = document.getElementById('theme-dot');
+        var label = document.getElementById('theme-label');
+        if (dot) dot.classList.toggle('light', t === 'light');
+        if (label) label.textContent = t === 'light' ? 'Light' : 'Dark';
+      }
+
+      var savedTheme = localStorage.getItem(STORAGE_KEY) || 'dark';
+      applyTheme(savedTheme);
+
+      var toggle = document.getElementById('theme-toggle');
+      if (toggle) {
+        toggle.addEventListener('click', function () {
+          var next = document.documentElement.classList.toggle('light') ? 'light' : 'dark';
+          applyTheme(next);
+          localStorage.setItem(STORAGE_KEY, next);
+        });
+      }
+
+      var overlay = document.getElementById('login-overlay');
+      var loginForm = document.getElementById('login-form');
+      var errorMessage = document.getElementById('login-error');
+      var swaggerEl = document.getElementById('swagger-ui');
+
+      function showError(msg) {
+        errorMessage.textContent = msg;
+        errorMessage.classList.add('show');
+      }
+
+      function clearError() {
+        errorMessage.textContent = '';
+        errorMessage.classList.remove('show');
+      }
+
+      function basicAuthHeader(username, password) {
+        var pair = username + ':' + password;
+        return 'Basic ' + btoa(pair);
+      }
+
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var username = document.getElementById('login-username').value.trim();
+        var password = document.getElementById('login-password').value;
+        var btn = document.getElementById('login-btn');
+
+        if (!username || !password) {
+          showError('Enter both a username and a password.');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Signing in…';
+        clearError();
+
+        fetch('/docs/openapi.json', {
+          headers: { 'Authorization': basicAuthHeader(username, password) }
+        }).then(function (res) {
+          if (!res.ok) {
+            var text = res.status === 401
+              ? 'Invalid username or password.'
+              : 'The API docs service returned an error (' + res.status + ').';
+            throw new Error(text);
+          }
+          return res.json();
+        }).then(function (spec) {
+          btn.disabled = false;
+          btn.textContent = 'Sign in';
+          document.getElementById('login-username').value = '';
+          document.getElementById('login-password').value = '';
+          renderSwaggerFromSpec(spec);
+        }).catch(function (err) {
+          btn.disabled = false;
+          btn.textContent = 'Sign in';
+          showError(err.message || 'Sign in failed.');
+        });
+      });
+
+      // Render from the spec object directly — no second fetch, so nothing is
+      // blocked by the Content-Security-Policy. The "ready" class is added only
+      // after SwaggerUIBundle returns, so a failure keeps the login overlay and
+      // surfaces the error instead of leaving a blank page.
+      function renderSwaggerFromSpec(spec) {
+        SwaggerUIBundle({
+          spec: spec,
+          dom_id: '#swagger-ui',
+          deepLinking: true,
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+          ],
+          layout: 'BaseLayout',
+          docExpansion: 'list',
+          displayRequestDuration: true,
+          tryItOutEnabled: false,
+          filter: true,
+          showExtensions: false,
+          showCommonExtensions: false,
+          defaultModelRenderModelExpandDepth: 2,
+          persistAuthorization: false,
+          plugins: [SwaggerUIBundle.plugins.DownloadUrl]
+        });
+        document.body.classList.add('ready');
+      }
+    })();
+  </script>
+</body>
+</html>
